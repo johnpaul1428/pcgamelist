@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jay Pee's Game Corner - Modern UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> 
+    
+    <style>
+        /* =================================================================
+           1. CSS VARIABLES & BASE STYLES
+           ================================================================= */
+        :root {
+            --primary-color: #4a6fa5; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --danger-color: #dc3545; /* Red */
+            --background-light: #f5f8fa;
+            --text-color: #212529;
+            --surface-color: white;
+            --border-radius-lg: 15px;
+            --border-radius-sm: 8px;
+            --shadow-color: rgba(0,0,0,0.08);
+            --card-shadow: 0 10px 30px var(--shadow-color);
+            --background-main: var(--background-light);
+            --neutral-separator-color: #636669; 
+        }
+
+        /* Dark Mode Overrides */
+        .dark-mode {
+            --background-main: #18191a;
+            --surface-color: #242526;
+            --text-color: #f0f2f5;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            --primary-color: #4a6fa5; 
+            --secondary-color: #2ed14d;
+            --shadow-color: rgba(255, 255, 255, 0.08);
+            --neutral-separator-color: #aeb0b4;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-main);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 400; 
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto; 
+            padding: 0 25px;
+        }
+
+        /* =================================================================
+           2. HEADER & TOGGLE
+           ================================================================= */
+        .main-header {
+            background-color: var(--surface-color);
+            box-shadow: 0 4px 10px var(--shadow-color);
+            padding: 15px 40px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .logo h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.0em; 
+            font-weight: 700; 
+        }
+
+        #dark-mode-toggle {
+            background: var(--surface-color);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color); 
+            padding: 10px 18px;
+            border-radius: 50px; 
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        #dark-mode-toggle:hover {
+            background-color: var(--primary-color);
+            color: white; 
+            box-shadow: 0 2px 8px rgba(74, 111, 165, 0.5); 
+        }
+        .dark-mode #dark-mode-toggle { 
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: var(--surface-color);
+        }
+        .dark-mode #dark-mode-toggle:hover {
+            background-color: var(--primary-color);
+            color: var(--surface-color);
+        }
+
+        /* Fixed Toggle Button (Cart Button) */
+        .hd-toggle {
+            position: fixed;
+            bottom: 30px; 
+            right: 30px; 
+            z-index: 1001; 
+            background: var(--primary-color); 
+            color: white; 
+            border: none;
+            padding: 15px 25px; 
+            border-radius: 50px; 
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500; 
+            box-shadow: 0 8px 15px rgba(74, 111, 165, 0.4); 
+            transition: all 0.3s;
+        }
+        .hd-toggle:hover {
+            background: #3b5a88; 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 20px rgba(74, 111, 165, 0.6); 
+        }
+        .hd-toggle i {
+            margin-right: 8px;
+        }
+        #game-count-display {
+            background-color: var(--secondary-color);
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 15px; 
+            margin-left: 10px;
+            font-weight: 700;
+            display: inline-block; 
+            transition: transform 0.1s;
+        }
+        /* Game Count Pop Effect */
+        #game-count-display.pop {
+            animation: popEffect 0.2s ease-out;
+        }
+        @keyframes popEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        /* =================================================================
+           3. PROGRESS BAR & CONTROLS (SEARCH, SORT)
+           ================================================================= */
+        .status-controls-section {
+            margin-bottom: 30px; 
+        }
+
+        /* Progress Bar Card (Main Top Bar) */
+        .hd-progress-bar-card {
+            display: flex;
+            align-items: center;
+            background-color: var(--surface-color); 
+            padding: 20px 30px; 
+            border-radius: var(--border-radius-lg); 
+            box-shadow: var(--card-shadow); 
+            margin-bottom: 25px; 
+            justify-content: flex-start; 
+            gap: 15px; 
+        }
+        
+        #hd-used-space-combined {
+            white-space: nowrap; 
+            font-weight: 400; 
+            font-size: 1.1em;
+            flex-shrink: 0; 
+            min-width: 90px; 
+            text-align: right;
+        }
+
+        .progress-bar-wrapper-new {
+            background-color: var(--background-light); 
+            height: 30px; 
+            border-radius: 15px; 
+            overflow: hidden;
+            flex-grow: 1; 
+            border: 2px solid var(--neutral-separator-color); 
+        }
+        
+        .dark-mode .progress-bar-wrapper-new {
+            background-color: #333;
+            border: 2px solid var(--neutral-separator-color); 
+        }
+        .progress-bar {
+            height: 100%;
+            transition: width 0.5s ease, background-color 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+        }
+        
+        /* Search and Sort Controls Row */
+        .bottom-controls-row {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: flex-start;
+            gap: 60px; 
+            align-items: center; 
+        }
+        .search-bar {
+            flex-grow: 1; 
+        }
+        .sorting-selector {
+            width: 250px; 
+        }
+        
+        /* Input/Select Common Styles */
+        .search-bar input, .sorting-selector select {
+            box-sizing: border-box; 
+            -webkit-appearance: none; 
+            -moz-appearance: none;
+            appearance: none;
+            
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius-sm); 
+            font-size: 1em;
+            box-shadow: inset 0 1px 3px var(--shadow-color); 
+            background-color: var(--surface-color); 
+            color: var(--text-color);
+            transition: border-color 0.3s;
+        }
+        .search-bar input:focus, .sorting-selector select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25); 
+        }
+        .dark-mode .search-bar input, .dark-mode .sorting-selector select {
+            border-color: #444;
+        }
+
+        /* Custom Dropdown Icon Wrapper */
+        .select-wrapper {
+            position: relative; 
+        }
+        .select-wrapper::after {
+            content: '\f0dc'; 
+            font-family: 'Font Awesome 6 Free'; 
+            font-weight: 900; 
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            pointer-events: none; 
+            font-size: 1em;
+        }
+
+        /* =================================================================
+           4. GAMES GRID
+           ================================================================= */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 25px; 
+        }
+        .game-card {
+            background-color: var(--surface-color); 
+            border-radius: var(--border-radius-lg); 
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .game-card:hover {
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        .game-card h4 {
+            margin: 0 0 8px 0;
+            color: var(--primary-color);
+            font-size: 1.2em;
+            font-weight: 500;
+            min-height: 40px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .game-card p {
+            margin: 0 0 8px 0; /* Binago: Ginawang 8px para mag-fit ang dalawang <p> (Genre at Size) */
+            font-size: 0.95em;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; 
+            justify-content: space-between; 
+            min-height: 150px; 
+        }
+        
+        /* Buttons - Base Styles */
+        .btn {
+            padding: 10px 18px; 
+            border: none;
+            border-radius: var(--border-radius-sm); 
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        /* Primary (Blue) - Used for Add/Toggle */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(74, 111, 165, 0.3); 
+        }
+        .btn-primary:hover { 
+            background-color: #3b5a88; 
+            transform: translateY(-1px);
+        }
+
+        /* NEW: Green Button for Screenshot */
+        .btn-green-screenshot {
+            background-color: var(--secondary-color); /* Green: #28a745 */
+            color: white;
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3); /* Shadow based on green */
+        }
+        .btn-green-screenshot:hover { 
+            background-color: #1e7e34; /* Darker green on hover */
+            transform: translateY(-1px);
+        }
+
+        /* Remove (Red) */
+        .btn-remove {
+            background-color: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(220,53,69,0.3);
+        }
+        .btn-remove:hover { 
+            background-color: #a71d2a;
+            transform: translateY(-1px);
+        }
+
+
+        /* =================================================================
+           5. FLOATING HARD DRIVE BOX (CART)
+           ================================================================= */
+        .floating-hd-box {
+            position: fixed;
+            bottom: 100px; 
+            left: 50%; 
+            transform: translateX(-50%) scale(0.8); 
+            width: 90%; 
+            max-width: 450px; 
+            background-color: var(--surface-color); 
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4); 
+            padding: 25px;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .floating-hd-box.hidden {
+            transform: translateX(-50%) scale(0.8); 
+            opacity: 0;
+            pointer-events: none;
+        }
+        .floating-hd-box:not(.hidden) {
+            transform: translateX(-50%) scale(1); 
+            opacity: 1;
+            pointer-events: auto; 
+        }
+
+        /* Mini Progress Bar */
+        .hd-progress-bar-card-mini {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-main); 
+            padding: 15px; 
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 20px; 
+            border: 1px solid #e0e0e0;
+        }
+        .dark-mode .hd-progress-bar-card-mini {
+            border-color: #3e3f40;
+            background-color: #333;
+        }
+
+        #mini-hd-used-space-combined {
+            white-space: nowrap; 
+            font-weight: 400; 
+            font-size: 1em;
+            flex-shrink: 0;
+            min-width: 80px;
+            text-align: right;
+            margin-left: 10px;
+        }
+        
+        .mini-progress-bar-wrapper {
+            background-color: var(--surface-color);
+            height: 25px; 
+            border-radius: 12px; 
+            overflow: hidden;
+            flex-grow: 1; 
+            border: 2px solid var(--neutral-separator-color); 
+        }
+
+        /* List Container */
+        .selected-games-list {
+            list-style: none;
+            padding: 0;
+            max-height: 50vh; 
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .dark-mode .selected-games-list {
+            border-top-color: #3e3f40;
+        }
+
+        /* List Item */
+        .selected-games-list li {
+            padding: 10px 0;
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0; 
+            font-size: 0.95em; 
+        }
+        .dark-mode .selected-games-list li {
+            border-bottom-color: #3e3f40;
+        }
+
+        .selected-game-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1; 
+            min-width: 0; 
+            margin-right: 10px; 
+        }
+
+        .game-title-display {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+            flex-shrink: 1; 
+            max-width: calc(100% - 80px); 
+            color: var(--text-color);
+        }
+
+        .game-size-display {
+            white-space: nowrap; 
+            font-weight: 500;
+            color: var(--primary-color); 
+            margin-left: auto; 
+            flex-shrink: 0; 
+            text-align: right;
+            width: 80px; 
+        }
+
+        /* Remove Button in Cart */
+        .selected-games-list .btn-remove {
+            flex-shrink: 0;
+            margin-left: 8px; 
+        }
+
+
+        .free-space-info { 
+            text-align: right;
+            margin-top: 15px;
+            font-size: 1.1em; 
+            font-weight: 500; 
+            padding-top: 10px; 
+            border-top: 1px solid #eee;
+        }
+        .free-space-info span {
+            font-weight: 700; 
+            transition: color 0.5s ease; 
+        }
+        
+        /* Fly-to-Cart Animation */
+        .flying-game-icon {
+            position: fixed;
+            width: 35px; 
+            height: 35px;
+            background-color: var(--secondary-color); 
+            color: white; 
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-size: 18px;
+            z-index: 9999; 
+            pointer-events: none; 
+            transition: transform 0.6s ease-in, opacity 0.6s ease-in; 
+            opacity: 1;
+        }
+        
+        /* Remove Item Animation */
+        @keyframes slideOut {
+            to {
+                opacity: 0;
+                transform: translateX(-100%);
+                max-height: 0;
+                padding: 0;
+                margin: 0;
+                border-bottom: none;
+            }
+        }
+        .selected-games-list li.removing {
+            animation: slideOut 0.4s ease-out forwards;
+            overflow: hidden; 
+            max-height: 50px; 
+        }
+        
+        /* =================================================================
+           6. FLOATING BOX ACTIONS (New Styles for Equal Button Size)
+           ================================================================= */
+
+        /* Update hd-actions CSS for better dual button layout */
+        .hd-actions {
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-top: 20px;
+        }
+
+        /* NEW: Make both buttons take equal width */
+        .hd-actions .btn {
+            flex-grow: 1; 
+            text-align: center;
+        }
+
+        /* =================================================================
+           7. SCREENSHOT CONTAINER STYLES (For HTML2Canvas)
+           ================================================================= */
+        .screenshot-container {
+            /* Basic structure */
+            padding: 25px; 
+            background-color: var(--surface-color); 
+            color: var(--text-color);
+            border-radius: var(--border-radius-lg); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            font-family: 'Roboto', sans-serif;
+            width: 400px; 
+            box-sizing: border-box;
+            /* Ensure it is hidden from view while generating, but in the DOM */
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            z-index: -1; 
+        }
+
+        /* NEW: Styles for the timestamp (small, grey, below h3) */
+        .screenshot-container .timestamp-header {
+            font-size: 0.85em; /* Konting liit */
+            color: #6c757d; /* Grey color (nababasa) */
+            margin-top: -5px; 
+            margin-bottom: 5px; /* Space bago mag-start ang separator */
+            font-weight: 400; 
+            display: block; 
+        }
+        
+        .dark-mode .screenshot-container .timestamp-header {
+            color: #aeb0b4; /* Light grey for dark mode */
+        }
+
+        .screenshot-container h3 {
+            color: var(--primary-color);
+            border-bottom: none; /* Removed the line here */
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 5px; /* Space above timestamp */
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+        
+        /* NEW: Separator line below the timestamp and above the list */
+        .screenshot-container .header-separator {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0; 
+            margin-bottom: 10px; /* Space before the list starts */
+        }
+
+
+        .screenshot-container ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+
+        .screenshot-container li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+        }
+        .dark-mode .screenshot-container li {
+            border-bottom-color: #444;
+        }
+
+        .screenshot-container .total-size-footer {
+            font-size: 1.1em;
+            font-weight: 500;
+            text-align: right;
+            padding-top: 10px;
+            border-top: 1px solid var(--neutral-separator-color);
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .screenshot-container .total-size-footer .size-value {
+             font-weight: 700;
+             color: var(--primary-color); 
+        }
+        
+        .dark-mode .screenshot-container {
+            background-color: var(--surface-color); 
+            color: var(--text-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+
+        /* =================================================================
+           8. MEDIA QUERIES (RESPONSIVENESS)
+           ================================================================= */
+        @media (max-width: 1100px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+        @media (max-width: 700px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            }
+            .bottom-controls-row {
+                gap: 15px; 
+            }
+            .search-bar, .sorting-selector {
+                width: 100%;
+                max-width: 100%; 
+            }
+            .main-header {
+                padding: 15px 20px;
+            }
+            .hd-progress-bar-card {
+                padding: 15px 20px;
+            }
+            .hd-toggle {
+                bottom: 20px; 
+                right: 20px; 
+                padding: 12px 20px;
+            }
+            .floating-hd-box {
+                bottom: 80px; 
+            }
+            .hd-progress-bar-card-mini {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <h1>🎮 Jay Pee's Game Corner</h1>
+        </div>
+        <button id="dark-mode-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
+    </header>
+
+    <main class="container">
+        
+        <section class="status-controls-section">
+            
+            <div class="hd-progress-bar-card">
+                <div class="progress-bar-wrapper-new">
+                    <div id="main-progress-bar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <span id="hd-used-space-combined">0.0/450 GB</span> 
+            </div>
+            
+            <div class="bottom-controls-row">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search games by title or genre..."> 
+                </div>
+                <div class="sorting-selector">
+                    <div class="select-wrapper">
+                        <select id="sort-by">
+                            <option value="name-asc" selected>Name A-Z</option>
+                            <option value="name-desc">Name Z-A</option>
+                            <option value="size-low">Size Low-High</option>
+                            <option value="size-high">Size High-Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+        <section class="games-grid-section">
+            <h2 style="color: var(--text-color);">Choose Your Games</h2>
+            <div id="games-grid" class="games-grid">
+                 </div>
+        </section>
+
+    </main>
+    
+    <button id="hd-toggle-btn" class="hd-toggle">
+        <i class="fas fa-gamepad"></i> <span id="toggle-text">Show</span> 
+        <span id="game-count-display">0</span> 
+    </button>
+    
+    <aside id="floating-hd-box" class="floating-hd-box hidden">
+        
+        <div class="hd-progress-bar-card-mini">
+            <div class="mini-progress-bar-wrapper">
+                <div id="mini-progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+            <span id="mini-hd-used-space-combined">0.0/450 GB</span>
+        </div>
+        
+        <ul id="selected-games-list" class="selected-games-list">
+            <li class="empty-message" style="color: var(--text-color); opacity: 0.7;">No games selected yet.</li>
+        </ul>
+
+        <div class="free-space-info">
+            Remaining Free: <span id="free-space-display" style="transition: color 0.5s ease;">450 GB</span> 
+        </div>
+
+        <div class="hd-actions">
+            <button id="download-screenshot-btn" class="btn btn-green-screenshot">
+                <i class="fas fa-camera"></i> Download Screenshot
+            </button>
+            <button id="clear-all-btn" class="btn btn-remove">Clear All</button>
+        </div>
+    </aside>
+
+    <script>
+        // =================================================================
+        // JAVASCRIPT LOGIC
+        // =================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. CONFIGURATION & DATA ---
+            const TOTAL_STORAGE_GB = 450; 
+            
+            // --- The game list remains intact ---
+            const NEW_GAMES_LIST = [
+                {id: 1, title:"A Quiet Place: The Road Ahead (2024)", sizeGB:38, genre: "Horror, Adventure"},
+                {id: 2, title:"A Way Out", sizeGB:22, genre: "Action, Adventure, Coop"},
+                {id: 3, title:"Age of Empire IV Anniversary Edition Complete DLC", sizeGB:105, genre: "RTS, Strategy"},
+                {id: 4, title:"Alan Wake Remastered", sizeGB:38, genre: "Action, Horror"},
+                {id: 5, title:"Angry Birds Collection", sizeGB:1.3, genre: "Casual, Puzzle"},
+                {id: 6, title:"Armored Core VI Fires of Rubicon", sizeGB:61.3, genre: "Action, Mecha"},
+                {id: 7, title:"Assassin's Creed 1", sizeGB:6.7, genre: "Action, Adventure"},
+                {id: 8, title:"Assassin's Creed 2", sizeGB:7, genre: "Action, Adventure"},
+                {id: 9, title:"Assassin's Creed 3", sizeGB:18, genre: "Action, Adventure"},
+                {id: 10, title:"Assassin's Creed Black Flag Complete DLC", sizeGB:19, genre: "Action, Adventure"},
+                {id: 11, title:"Assassin's Creed Brotherhood", sizeGB:9, genre: "Action, Adventure"},
+                {id: 12, title:"Assassin's Creed Mirage", sizeGB:42, genre: "Action, Adventure"},
+                {id: 13, title:"Assassin's Creed Odyssey", sizeGB:99, genre: "RPG, Adventure"},
+                {id: 14, title:"Assassin's Creed Origins The Curse of the Pharaohs (not working on windows 11 24h2)", sizeGB:74, genre: "RPG, Adventure"},
+                {id: 15, title:"Assassin's Creed Revelations", sizeGB:6.8, genre: "Action, Adventure"},
+                {id: 16, title:"Assassin's Creed Rogue", sizeGB:12, genre: "Action, Adventure"},
+                {id: 17, title:"Assassin's Creed Syndicate", sizeGB:63, genre: "Action, Adventure"},
+                {id: 18, title:"Assassin's Creed Unity", sizeGB:45, genre: "Action, Adventure"},
+                {id: 19, title:"Assassin's Creed Valhalla Ultimate Pack", sizeGB:158, genre: "RPG, Adventure"},
+                {id: 20, title:"Assetto Corsa Competizione", sizeGB:19.1, genre: "Racing, Sim"},
+                {id: 21, title:"Attack on Titan", sizeGB:17.2, genre: "Action, Anime"},
+                {id: 22, title:"Attack on Titan 2", sizeGB:40, genre: "Action, Anime"},
+                {id: 23, title:"Baldur’s Gate 3", sizeGB:143.1, genre: "RPG, Fantasy"},
+                {id: 24, title:"Batman Arkham City GAME OF THE YEAR EDITION", sizeGB:17, genre: "Action, Superhero"},
+                {id: 25, title:"Batman Arkham Origins", sizeGB:25.5, genre: "Action, Superhero"},
+                {id: 26, title:"Battlefield 1", sizeGB:31, genre: "FPS, Shooter"},
+                {id: 27, title:"Battlefield 4 PREMIUM EDITION", sizeGB:73, genre: "FPS, Shooter"},
+                {id: 28, title:"Battlefield Hardline", sizeGB:38, genre: "FPS, Shooter"},
+                {id: 29, title:"Battlefield V", sizeGB:50.1, genre: "FPS, Shooter"},
+                {id: 30, title:"BeamNG.drive", sizeGB:51, genre: "Simulation, Racing"},
+                {id: 31, title:"Bleach Rebirth of Souls (2025) (16gb ram/memory needed)", sizeGB:73, genre: "Fighting, Anime"},
+                {id: 32, title:"Bully Scholarship Edition", sizeGB:5, genre: "Action, Adventure"},
+                {id: 33, title:"Bus Simulator 21 Next Stop", sizeGB:23, genre: "Simulation"},
+                {id: 34, title:"Call of Duty 4 Modern Warfare", sizeGB:6.46, genre: "FPS, Shooter"},
+                {id: 35, title:"Call of duty Advanced Warfare", sizeGB:36.6, genre: "FPS, Shooter"},
+                {id: 36, title:"Call of Duty Black Ops 1 Complete DLC", sizeGB:11.5, genre: "FPS, Shooter"},
+                {id: 37, title:"Call of Duty Black Ops 2", sizeGB:23, genre: "FPS, Shooter"},
+                {id: 38, title:"Call of Duty Black Ops 3", sizeGB:69, genre: "FPS, Shooter"},
+                {id: 39, title:"Call of Duty Black Ops 6", sizeGB:55, genre: "FPS, Shooter"},
+                {id: 40, title:"Call of Duty Black Ops Cold War (not working on windows 11 24h2)", sizeGB:90, genre: "FPS, Shooter"},
+                {id: 41, title:"Call of Duty Ghost", sizeGB:30, genre: "FPS, Shooter"},
+                {id: 42, title:"Call of Duty Infinite Warfare", sizeGB:71, genre: "FPS, Shooter"},
+                {id: 43, title:"Call of Duty Modern Warfare (2019)", sizeGB:99, genre: "FPS, Shooter"},
+                {id: 44, title:"Call of Duty Modern Warfare 2", sizeGB:14.2, genre: "FPS, Shooter"},
+                {id: 45, title:"Call of Duty Modern Warfare 2 (2022)", sizeGB:35, genre: "FPS, Shooter"},
+                {id: 46, title:"Call of Duty Modern Warfare 3", sizeGB:17.8, genre: "FPS, Shooter"},
+                {id: 47, title:"Call of Duty Modern Warfare III (2023)", sizeGB:61, genre: "FPS, Shooter"},
+                {id: 48, title:"Call of Duty Vanguard", sizeGB:85, genre: "FPS, Shooter"},
+                {id: 49, title:"Call of Duty World at War", sizeGB:6.92, genre: "FPS, Shooter"},
+                {id: 50, title:"Call of Duty WW2", sizeGB:64, genre: "FPS, Shooter"},
+                {id: 51, title:"Clair Obscur: Expedition 33", sizeGB:41, genre: "RPG, Adventure"},
+                {id: 52, title:"Company of Heroes 3", sizeGB:28, genre: "RTS, Strategy"},
+                {id: 53, title:"Counter Strike Source 2004 CLASSIC", sizeGB:1.72, genre: "FPS, Shooter"},
+                {id: 54, title:"Crash Bandicoot 4", sizeGB:23.3, genre: "Platformer, Adventure"},
+                {id: 55, title:"Crash Bandicoot N. Sane Trilogy", sizeGB:30, genre: "Platformer, Adventure"},
+                {id: 56, title:"Cyberpunk 2077 Phantom Liberty", sizeGB:85, genre: "RPG, Open World"},
+                {id: 57, title:"Dark Souls 3", sizeGB:25.1, genre: "Action, RPG"},
+                {id: 58, title:"Days Gone", sizeGB:44.6, genre: "Action, Open World"},
+                {id: 59, title:"Deadpool", sizeGB:6.4, genre: "Action, Superhero"},
+                {id: 60, title:"Death Stranding Director's Cut", sizeGB:75, genre: "Action, Adventure"},
+                {id: 61, title:"Delta Force Black Hawk Down", sizeGB:1.23, genre: "FPS, Shooter"},
+                {id: 62, title:"Detroit Become Human", sizeGB:60, genre: "Adventure, Narrative"},
+                {id: 63, title:"Devil May Cry 4 Special Edition", sizeGB:26, genre: "Action, Hack and Slash"},
+                {id: 64, title:"Devil May Cry 5 Deluxe Edition", sizeGB:40.1, genre: "Action, Hack and Slash"},
+                {id: 65, title:"Diablo 2 Resurrected", sizeGB:29, genre: "Action, RPG"},
+                {id: 66, title:"Dishonored GOTY Edition", sizeGB:12.2, genre: "Action, Stealth"},
+                {id: 67, title:"Doom Eternal", sizeGB:88.8, genre: "FPS, Action"},
+                {id: 68, title:"Dragon Ball Fighter Z COMPLETE DLC", sizeGB:7, genre: "Fighting, Anime"},
+                {id: 69, title:"Dragon Ball Sparking Zero (Steam Required)", sizeGB:28, genre: "Fighting, Anime"},
+                {id: 70, title:"Dragon Ball Z: Kakarot", sizeGB:51.3, genre: "RPG, Anime"},
+                {id: 71, title:"Dragon Dogma 2 (Videocard atleast 6gb and up)", sizeGB:64, genre: "RPG, Fantasy"},
+                {id: 72, title:"Dragonball Xenoverse 2 Deluxe Edition", sizeGB:29, genre: "Fighting, Anime"},
+                {id: 73, title:"Dragonball Xenoverse Ultimate Edition", sizeGB:10.6, genre: "Fighting, Anime"},
+                {id: 74, title:"Dying Light 2 Stay Human: Reloaded Complete DLC", sizeGB:72, genre: "Action, Horror"},
+                {id: 75, title:"Dying Light The w/ The Following Complete DLC", sizeGB:46, genre: "Action, Horror"},
+                {id: 76, title:"Dying Light: The Beast (2025)", sizeGB:61, genre: "Action, Horror"},
+                {id: 77, title:"Dynasty Warriors Origins (2025)", sizeGB:52, genre: "Action, Hack and Slash"},
+                {id: 78, title:"Elden Ring NightReign", sizeGB:20.5, genre: "Action, RPG"},
+                {id: 79, title:"Elden Ring Shadow of the Erdtree Edition", sizeGB:70, genre: "Action, RPG"},
+                {id: 80, title:"Euro Truck Simulator 2", sizeGB:29, genre: "Simulation"},
+                {id: 81, title:"Evil West", sizeGB:48.6, genre: "Action, Adventure"},
+                {id: 82, title:"F1 22", sizeGB:44, genre: "Racing, Sim"},
+                {id: 83, title:"Fallout 4 Game of the Year Edition Complete DLC", sizeGB:43, genre: "RPG, Open World"},
+                {id: 84, title:"Far Cry 6", sizeGB:136, genre: "FPS, Open World"},
+                {id: 85, title:"FIFA 23", sizeGB:48, genre: "Sports, Soccer"},
+                {id: 86, title:"Fight Night Champion (PS3 Emulator) - 6 Cores CPU Needed", sizeGB:8, genre: "Fighting, Sports, Emulation"},
+                {id: 87, title:"Final Fantasy VII Rebirth (2025)", sizeGB:155, genre: "RPG, Fantasy"},
+                {id: 88, title:"Final fantasy VII remake Intergrade", sizeGB:94.4, genre: "RPG, Fantasy"},
+                {id: 89, title:"Final Fantasy XV - (not working on windows 11 24h2)", sizeGB:98.6, genre: "RPG, Fantasy"},
+                {id: 90, title:"Final Fantasy XVI (2025) (16gb ram/memory needed)", sizeGB:155, genre: "RPG, Fantasy"},
+                {id: 91, title:"Forza Horizon 5 Premium Edition", sizeGB:155, genre: "Racing, Open World"},
+                {id: 92, title:"Ghost of Tsushima Director's Cut (Complete DLC)", sizeGB:54, genre: "Action, Adventure"},
+                {id: 93, title:"Ghost Recon Wildlands", sizeGB:65, genre: "Tactical, Shooter"},
+                {id: 94, title:"God of War 3 (PS3 Emulation) 6 Cores CPU Needed", sizeGB:25, genre: "Action, Emulation"},
+                {id: 95, title:"God of War 4 / God of War (2022)", sizeGB:61.8, genre: "Action, Adventure"},
+                {id: 96, title:"God of War Ragnarok - DIGITAL DELUXE EDITION", sizeGB:160, genre: "Action, Adventure"},
+                {id: 97, title:"Granny 1", sizeGB:1.49, genre: "Horror, Puzzle"},
+                {id: 98, title:"Granny 3", sizeGB:0.669, genre: "Horror, Puzzle"},
+                {id: 99, title:"Granny Chapter 2", sizeGB:1.06, genre: "Horror, Puzzle"},
+                {id: 100, title:"Grid 2 HD Edition", sizeGB:10.9, genre: "Racing, Sports"},
+                {id: 101, title:"Grounded 2 + Coop (need steam login)", sizeGB:32, genre: "Survival, Adventure"},
+                {id: 102, title:"GTA IV Complete Edition 2 in 1", sizeGB:30.5, genre: "Action, Open World"},
+                {id: 103, title:"GTA TRILOGY DEFINITIVE EDITION", sizeGB:32.5, genre: "Action, Open World"},
+                {id: 104, title:"GTA V Enhanced Edition (2025)", sizeGB:93, genre: "Action, Open World"},
+                {id: 105, title:"Guitar Hero 3 Legends of Rock", sizeGB:4.4, genre: "Rhythm, Music"},
+                {id: 106, title:"Gundam Breaker 4 w/ DLC", sizeGB:10.2, genre: "Action, Mecha"},
+                {id: 107, title:"Hades", sizeGB:11.2, genre: "Action, Rogue-lite"},
+                {id: 108, title:"HALO: The Master Chief Collection", sizeGB:128, genre: "FPS, Shooter"},
+                {id: 110, title:"Hellblade: Senua’s Sacrifice Enhanced Edition", sizeGB:19.1, genre: "Action, Adventure"},
+                {id: 111, title:"Hitman 3 World of Assassination", sizeGB:75.2, genre: "Stealth, Action"},
+                {id: 112, title:"Hogwarts Legacy - (not working on windows 11 24h2)", sizeGB:73.2, genre: "RPG, Open World"},
+                {id: 113, title:"Hollow Knight Silksong (2025)", sizeGB:8, genre: "Metroidvania, Platformer"},
+                {id: 114, title:"Horizon Forbidden West Complete Edition 2024", sizeGB:124.1, genre: "Action, Open World"},
+                {id: 115, title:"Hunter X Hunter NEN Impact", sizeGB:3, genre: "Fighting, Anime"},
+                {id: 116, title:"Injustice 2 Legendary Edition", sizeGB:45, genre: "Fighting, Superhero"},
+                {id: 117, title:"Injustice Gods Among Us Ultimate Edition", sizeGB:20.5, genre: "Fighting, Superhero"},
+                {id: 118, title:"inZOI", sizeGB:23, genre: "Simulation, Life Sim"},
+                {id: 119, title:"It Takes Two", sizeGB:45, genre: "Platformer, Coop"},
+                {id: 120, title:"Jujutsu Kaisen Cursed Clash (need steam)", sizeGB:12.8, genre: "Fighting, Anime"},
+                {id: 121, title:"Jump Force - Deluxe Edition", sizeGB:22.4, genre: "Fighting, Anime"},
+                {id: 122, title:"Karma The Dark World (2025)", sizeGB:27, genre: "Action, Adventure"},
+                {id: 123, title:"Kena - Bridge of Spirits Digital Deluxe Edition", sizeGB:24, genre: "Action, Adventure"},
+                {id: 124, title:"Kingdom Hearts 3 + Remind", sizeGB:66, genre: "Action, RPG"},
+                {id: 125, title:"Left4dead 2", sizeGB:14.5, genre: "FPS, Horror, Coop"},
+                {id: 126, title:"Lego Batman", sizeGB:4.15, genre: "Action, Adventure"},
+                {id: 127, title:"Lego Batman 2 DC HEROES", sizeGB:3.77, genre: "Action, Adventure"},
+                {id: 128, title:"Lego Batman 3 Beyond Gotham", sizeGB:8, genre: "Action, Adventure"},
+                {id: 129, title:"Little Nightmares", sizeGB:10, genre: "Horror, Puzzle"},
+                {id: 130, title:"Little Nightmares 2 Enhanced Edition", sizeGB:22.4, genre: "Horror, Puzzle"},
+                {id: 131, title:"Little Nightmares III (2025) (Need Steam Account)", sizeGB:13, genre: "Horror, Puzzle"},
+                {id: 132, title:"Lords of the Fallen", sizeGB:34.2, genre: "Action, RPG"},
+                {id: 133, title:"Lost Soul Aside (2025)", sizeGB:65, genre: "Action, RPG"},
+                {id: 134, title:"Luigi's Mansion 3 (Switch Emulation)", sizeGB:9, genre: "Adventure, Emulation"},
+                {id: 135, title:"Mad Max", sizeGB:33, genre: "Action, Open World"},
+                {id: 136, title:"Mafia 3 Definitive Edition", sizeGB:38, genre: "Action, Open World"},
+                {id: 137, title:"Mafia Definitive Edition", sizeGB:28, genre: "Action, Adventure"},
+                {id: 138, title:"MAFIA II Definitive Edition", sizeGB:45, genre: "Action, Adventure"},
+                {id: 139, title:"Marvel's Avengers Definitive Edition", sizeGB:147.1, genre: "Action, Superhero"},
+                {id: 140, title:"Max Payne 3", sizeGB:33, genre: "Action, Shooter"},
+                {id: 141, title:"Medal of Honor WarFighter", sizeGB:16, genre: "FPS, Shooter"},
+                {id: 142, title:"Metal Gear Solid Delta Snake Eater (2025)", sizeGB:95, genre: "Stealth, Action"},
+                {id: 143, title:"Metal Slug XX", sizeGB:0.55, genre: "Action, Arcade"},
+                {id: 144, title:"Minecraft Legends", sizeGB:10.6, genre: "Strategy, Action"},
+                {id: 145, title:"Monster Energy Super Cross Official Game 6", sizeGB:22.2, genre: "Racing, Sports"},
+                {id: 146, title:"Monster Hunter Rise SUNBREAK (not working on windows 11 24h2)", sizeGB:33.3, genre: "Action, RPG"},
+                {id: 147, title:"Monster Hunter World : ICEBORNE (Need Steam Online)", sizeGB:52, genre: "Action, RPG"},
+                {id: 148, title:"Mortal Kombat 11 Ultimate", sizeGB:146, genre: "Fighting"},
+                {id: 149, title:"Mortal Kombat Komplete Edition", sizeGB:10, genre: "Fighting"},
+                {id: 150, title:"MOTOGP 25", sizeGB:26, genre: "Racing, Sports"},
+                {id: 151, title:"Naruto Shippuden Ultimate Ninja Storm 4", sizeGB:39, genre: "Fighting, Anime"},
+                {id: 152, title:"Naruto X Boruto", sizeGB:29.7, genre: "Fighting, Anime"},
+                {id: 153, title:"Need For Speed Most Wanted Criterion Limited Edition", sizeGB:6.3, genre: "Racing"},
+                {id: 154, title:"Need For Speed Payback Deluxe Edition", sizeGB:27.6, genre: "Racing"},
+                {id: 155, title:"Need For Speed Rivals", sizeGB:10, genre: "Racing"},
+                {id: 156, title:"Ninja Gaiden 2 Black (2025)", sizeGB:82, genre: "Action, Hack and Slash"},
+                {id: 157, title:"Nioh 2 Complete Edition", sizeGB:77, genre: "Action, RPG"},
+                {id: 158, title:"Onepiece Pirate Warriors 4 Ultimate Edition", sizeGB:26.1, genre: "Action, Anime"},
+                {id: 159, title:"Only Up!", sizeGB:7.5, genre: "Platformer"},
+                {id: 160, title:"Ori and the will of the Wisps", sizeGB:15.1, genre: "Platformer, Adventure"},
+                {id: 161, title:"Outlast 1", sizeGB:6.04, genre: "Horror, Stealth"},
+                {id: 162, title:"Outlast 2", sizeGB:25.3, genre: "Horror, Stealth"},
+                {id: 163, title:"Overcooked 2", sizeGB:8.01, genre: "Casual, Coop"},
+                {id: 164, title:"Overcooked! All You Can Eat", sizeGB:8.27, genre: "Casual, Coop"},
+                {id: 165, title:"Palworld (Pokemon PC Version 2024)", sizeGB:27, genre: "Survival, Adventure"},
+                {id: 166, title:"Plants vs Zombies", sizeGB:0.446, genre: "Strategy, Tower Defense"},
+                {id: 167, title:"Pokemon Legends Z-A (Switch Emulation)", sizeGB:5, genre: "RPG, Emulation"},
+                {id: 168, title:"Pokemon Scarlet & Violet (Ryujinx Edition Switch)", sizeGB:23.2, genre: "RPG, Emulation"},
+                {id: 169, title:"Pokemon Shining Pearl & Brilliant Diamond (switch emulation)", sizeGB:11, genre: "RPG, Emulation"},
+                {id: 170, title:"Pokemon Sword & Shield (switch emulation)", sizeGB:25, genre: "RPG, Emulation"},
+                {id: 171, title:"Pokemons Legends Arceus", sizeGB:6.45, genre: "RPG, Emulation"},
+                {id: 172, title:"Police Simulator Complete DLC", sizeGB:13, genre: "Simulation"},
+                {id: 173, title:"Prototype 2 RADNET EDITION", sizeGB:9.89, genre: "Action, Open World"},
+                {id: 174, title:"Ratchet and Clank: Rift Apart", sizeGB:48.5, genre: "Platformer, Action"},
+                {id: 175, title:"Ready or Not (Need Steam)", sizeGB:57, genre: "Tactical, FPS"},
+                {id: 176, title:"Red Alert Command and Conquer Remastered Collection", sizeGB:25, genre: "RTS, Strategy"},
+                {id: 177, title:"Red Dead Redemption 1", sizeGB:10, genre: "Action, Open World"},
+                {id: 178, title:"Red Dead Redemption 2", sizeGB:119, genre: "Action, Open World"},
+                {id: 179, title:"Resident Evil 2 Remake", sizeGB:24, genre: "Horror, Survival"},
+                {id: 180, title:"Resident Evil 3 Remake", sizeGB:24, genre: "Horror, Survival"},
+                {id: 181, title:"Resident Evil 4 Remake Complete DLC", sizeGB:59.2, genre: "Horror, Survival"},
+                {id: 182, title:"Resident Evil 5 Gold Edition", sizeGB:8.52, genre: "Action, Horror"},
+                {id: 183, title:"Resident Evil 6", sizeGB:13, genre: "Action, Horror"},
+                {id: 184, title:"Resident Evil 7 Biohazard", sizeGB:65, genre: "Horror, Survival"},
+                {id: 185, title:"Resident Evil Village", sizeGB:38, genre: "Horror, Survival"},
+                {id: 186, title:"Sea of Stars", sizeGB:3.72, genre: "RPG, Indie"},
+                {id: 187, title:"Sekiro Die Twice Game of the year edition", sizeGB:15.1, genre: "Action, RPG"},
+                {id: 188, title:"Senua's Saga - Hellblade II", sizeGB:50, genre: "Action, Adventure"},
+                {id: 189, title:"Shadow of the Tomb Raider", sizeGB:59, genre: "Action, Adventure"},
+                {id: 190, title:"SIFU", sizeGB:29.1, genre: "Action, Martial Arts"},
+                {id: 191, title:"Silent Hill 2 Remake (2024)", sizeGB:35, genre: "Horror, Survival"},
+                {id: 192, title:"Silent Hill F (2025)", sizeGB:49, genre: "Horror, Survival"},
+                {id: 193, title:"Sleeping Dogs Definitive Edition", sizeGB:16, genre: "Action, Open World"},
+                {id: 194, title:"Sniper Elite 4 Deluxe Edition Complete DLC", sizeGB:66, genre: "Stealth, Shooter"},
+                {id: 195, title:"Snow Runner", sizeGB:52.5, genre: "Simulation, Driving"},
+                {id: 196, title:"Sonic Unleashed (2025)", sizeGB:10, genre: "Platformer"},
+                {id: 197, title:"Sons of the Forest", sizeGB:15, genre: "Survival, Horror"},
+                {id: 198, title:"Spider-Man 2 Digital Deluxe Edition (2025)", sizeGB:120, genre: "Action, Superhero"},
+                {id: 199, title:"Spider-Man Miles Morales", sizeGB:57, genre: "Action, Superhero"},
+                {id: 200, title:"Spider-Man Remastered", sizeGB:79, genre: "Action, Superhero"},
+                {id: 201, title:"Star Wars Battle Front Ultimate Edition", sizeGB:53, genre: "FPS, Shooter"},
+                {id: 202, title:"Star Wars Jedi Survivors", sizeGB:130, genre: "Action, Adventure"},
+                {id: 203, title:"Stray", sizeGB:6.27, genre: "Adventure, Indie"},
+                {id: 204, title:"Street Fighter V Champion Edition", sizeGB:55, genre: "Fighting"},
+                {id: 205, title:"Super Mario 3D World + Bowser's Fury (SWITCH Emulation)", sizeGB:3.6, genre: "Platformer, Emulation"},
+                {id: 206, title:"Super Mario Bros. Wonder (Switch Emulation)", sizeGB:4.2, genre: "Platformer, Emulation"},
+                {id: 207, title:"Super Smash Bros. Ultimate (Switch Emulation)", sizeGB:17.5, genre: "Fighting, Emulation"},
+                {id: 208, title:"Swords Art Online Fractured Daydream", sizeGB:42.5, genre: "Action, Anime"},
+                {id: 209, title:"Taxi Life A City Driving Simulator (2024)", sizeGB:4.23, genre: "Simulation, Driving"},
+                {id: 210, title:"Tekken 7 Ultimate Edition Complete DLC", sizeGB:81.5, genre: "Fighting"},
+                {id: 211, title:"Tekken 8 Ultimate Edition", sizeGB:120, genre: "Fighting"},
+                {id: 212, title:"Tekken Tag Tournament 2 (PS3 Emulation) 6 CPU Cores CPU Needed", sizeGB:27, genre: "Fighting, Emulation"},
+                {id: 213, title:"Terminator Salvation The Videogame", sizeGB:7, genre: "Action, Shooter"},
+                {id: 214, title:"The Callisto Protocol Deluxe Edition", sizeGB:76.1, genre: "Horror, Survival"},
+                {id: 215, title:"The Elder Scrolls 4 Oblivion Remastered", sizeGB:126, genre: "RPG, Open World"},
+                {id: 216, title:"The Evil Within 2", sizeGB:34.5, genre: "Horror, Survival"},
+                {id: 217, title:"The House of the Dead 2 Remake", sizeGB:4, genre: "Action, Shooter"},
+                {id: 218, title:"The King of Fighters XV", sizeGB:46, genre: "Fighting"},
+                {id: 219, title: "The Last of Us 2 Remastered (2025)", sizeGB:89, genre: "Action, Survival"},
+                {id: 220, title: "The last of Us Part 1 - (NEED 16gb ram)", sizeGB:78.7, genre: "Action, Survival"},
+                {id: 221, title: "The Legend of Zelda Breath of the Wild (Wii U Emulation)", sizeGB:17, genre: "Adventure, Emulation"},
+                {id: 222, title: "The Legend of Zelda Tears of the Kingdom (Switch Emulation)", sizeGB:17, genre: "Adventure, Emulation"},
+                {id: 223, title: "The Sims 4 Ultimate Edition Complete DLC", sizeGB:62, genre: "Simulation, Life Sim"},
+                {id: 224, title: "The Witcher 3 Wildhunt GAME OF THE YEAR EDITION", sizeGB:62, genre: "RPG, Open World"},
+                {id: 225, title: "Tokyo Xtreme Racer (2025)", sizeGB:7, genre: "Racing"},
+                {id: 226, title: "Transformer Fall of Cybertron", sizeGB:8.11, genre: "Action, Shooter"},
+                {id: 227, title: "Transformer War For Cybertron", sizeGB:8.29, genre: "Action, Shooter"},
+                {id: 228, title: "Ultimate Marvel vs Capcom 3", sizeGB:3.58, genre: "Fighting"},
+                {id: 229, title: "Uncharted Legacy of Thieves Collection 2 in 1", sizeGB:99.5, genre: "Action, Adventure"},
+                {id: 230, title: "Until Dawn", sizeGB:60, genre: "Horror, Narrative"},
+                {id: 231, title: "War Hammer 40,000 Space Marine 2", sizeGB:65, genre: "Action, Shooter"},
+                {id: 232, title: "Warcraft 3 Frozen Throne Dota 1", sizeGB:2.74, genre: "RTS, Strategy"},
+                {id: 233, title: "Watch Dogs 2", sizeGB:47.4, genre: "Action, Open World"},
+                {id: 234, title: "World War Z Aftermath", sizeGB:56.5, genre: "Action, Shooter"},
+                {id: 235, title: "Wuchang: Fallen Feathers", sizeGB:47, genre: "Action, RPG"},
+                {id: 236, title: "WWE 2K25 The Bloodline Edition Complete DLC", sizeGB:92, genre: "Sports, Fighting"}
+            ];
+
+            const games = NEW_GAMES_LIST.map((game, index) => ({
+                id: index + 1,
+                title: game.title,
+                sizeGB: game.sizeGB,
+                genre: game.genre || 'Various', 
+            }));
+
+
+            let selectedGames = [];
+            let usedSpaceGB = 0;
+
+            // --- 2. DOM Elements ---
+            const body = document.body;
+            const mainProgressBar = document.getElementById('main-progress-bar');
+            const hdUsedSpaceCombined = document.getElementById('hd-used-space-combined');
+            const miniHdUsedSpaceCombined = document.getElementById('mini-hd-used-space-combined'); 
+            const gameCountDisplay = document.getElementById('game-count-display');
+            const gamesGrid = document.getElementById('games-grid');
+            const floatingHdBox = document.getElementById('floating-hd-box');
+            const clearAllBtn = document.getElementById('clear-all-btn');
+            const sortBySelector = document.getElementById('sort-by');
+            const hdToggleBtn = document.getElementById('hd-toggle-btn');
+            const darkModeToggle = document.getElementById('dark-mode-toggle'); 
+            const searchInput = document.getElementById('search-input'); 
+            const toggleTextSpan = document.getElementById('toggle-text'); 
+            const miniProgressBar = document.getElementById('mini-progress-bar');
+            const freeSpaceDisplay = document.getElementById('free-space-display'); 
+            const selectedGamesList = document.getElementById('selected-games-list');
+            // NEW: Download Screenshot Button
+            const downloadScreenshotBtn = document.getElementById('download-screenshot-btn');
+
+
+            // --- 3. UTILITY FUNCTIONS ---
+            
+            // Debounce utility for input handling (performance)
+            const debounce = (func, delay) => {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), delay);
+                };
+            };
+            
+            const triggerPopEffect = () => {
+                gameCountDisplay.classList.remove('pop');
+                void gameCountDisplay.offsetWidth; // Force reflow
+                gameCountDisplay.classList.add('pop');
+            }
+
+            const flyToCart = (startElement) => {
+                const targetElement = hdToggleBtn; 
+                const startRect = startElement.getBoundingClientRect();
+                const targetRect = targetElement.getBoundingClientRect();
+                
+                const flyingIcon = document.createElement('div');
+                flyingIcon.classList.add('flying-game-icon');
+                flyingIcon.innerHTML = '<i class="fas fa-hdd"></i>'; 
+                
+                flyingIcon.style.left = startRect.left + (startRect.width / 2) - 17.5 + 'px'; 
+                flyingIcon.style.top = startRect.top + (startRect.height / 2) - 17.5 + 'px'; 
+                document.body.appendChild(flyingIcon);
+
+                setTimeout(() => {
+                    const targetXCenter = targetRect.left + (targetRect.width / 2);
+                    const targetYCenter = targetRect.top + (targetRect.height / 2);
+                    
+                    const deltaX = targetXCenter - (startRect.left + (startRect.width / 2));
+                    const deltaY = targetYCenter - (startRect.top + (startRect.height / 2));
+
+                    flyingIcon.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2)`;
+                    flyingIcon.style.opacity = '0.5';
+                    
+                    setTimeout(() => {
+                        flyingIcon.remove();
+                        triggerPopEffect(); 
+                    }, 600); 
+                }, 50);
+            };
+            
+            // HSL Color Interpolation Function for smooth transition
+            const getProgressBarColor = (percentageUsed) => {
+                const clampedPercentage = Math.min(100, Math.max(0, percentageUsed));
+                const hue = 120 - (clampedPercentage * 1.2); 
+                return `hsl(${hue}, 100%, 45%)`;
+            };
+
+
+            // --- 4. DARK MODE LOGIC ---
+            const enableDarkMode = () => {
+                body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                localStorage.setItem('darkMode', 'enabled');
+            }
+
+            const disableDarkMode = () => {
+                body.classList.remove('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+
+            const toggleDarkMode = () => {
+                if (body.classList.contains('dark-mode')) {
+                    disableDarkMode();
+                } else {
+                    enableDarkMode();
+                }
+            }
+            
+            // Initial check
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                enableDarkMode();
+            }
+
+            // Dark Mode Event Listener
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+
+
+            // --- 5. CORE STATUS UPDATE ---
+            const updateStorageStatus = () => {
+                const percentageUsed = (usedSpaceGB / TOTAL_STORAGE_GB) * 100;
+                // I-clamp ang free space para siguradong hindi lalampas sa 450GB ang display
+                const freeSpaceGB = Math.max(0, TOTAL_STORAGE_GB - usedSpaceGB); 
+                const gameCount = selectedGames.length;
+
+                // Get the dynamic HSL color
+                const color = getProgressBarColor(percentageUsed);
+                
+                // Prepare HTML for display
+                const totalSpaceText = TOTAL_STORAGE_GB.toFixed(0); 
+                const totalSpaceHTML = `<span style="color: ${color}; font-weight: 700;">${totalSpaceText} GB</span>`; 
+                const usedSpaceText = usedSpaceGB.toFixed(1);
+                const usedSpaceHTML = `<span style="color: ${color}; font-weight: 700;">${usedSpaceText}</span>`; 
+                const slashHTML = `<span style="color: var(--neutral-separator-color); font-weight: 700;">/</span>`;
+
+                // Update text displays.
+                hdUsedSpaceCombined.innerHTML = `${usedSpaceHTML}${slashHTML}${totalSpaceHTML}`; 
+                miniHdUsedSpaceCombined.innerHTML = `${usedSpaceHTML}${slashHTML}${totalSpaceHTML}`; 
+                gameCountDisplay.textContent = `${gameCount}`;
+
+                // Update Progress Bars (Width & Color)
+                const barWidth = `${Math.min(100, percentageUsed)}%`;
+                mainProgressBar.style.width = barWidth;
+                miniProgressBar.style.width = barWidth;
+                mainProgressBar.style.backgroundColor = color;
+                miniProgressBar.style.backgroundColor = color;
+                
+                // Free space display with 1 decimal place
+                freeSpaceDisplay.textContent = `${freeSpaceGB.toFixed(1)} GB`;
+                freeSpaceDisplay.style.color = color;
+            };
+
+            // --- 6. GAME LIST RENDERING & SORTING ---
+            const sortGames = (gameList, criterion) => {
+                switch(criterion) {
+                    case 'name-asc': return gameList.sort((a, b) => a.title.localeCompare(b.title));
+                    case 'name-desc': return gameList.sort((a, b) => b.title.localeCompare(a.title));
+                    case 'size-low': return gameList.sort((a, b) => a.sizeGB - b.sizeGB);
+                    case 'size-high': return gameList.sort((a, b) => b.sizeGB - a.sizeGB);
+                    default: return gameList;
+                }
+            };
+            
+            // Function to update only one card's button state
+            const updateGameCardButton = (gameId) => {
+                const card = gamesGrid.querySelector(`.game-card[data-id="${gameId}"]`);
+                if (card) {
+                    const button = card.querySelector('.btn');
+                    // Check if the game is still selected
+                    const isSelected = selectedGames.some(sg => sg.id === parseInt(gameId));
+                    
+                    button.textContent = isSelected ? 'Remove' : 'Add';
+                    button.classList.toggle('btn-remove', isSelected);
+                    button.classList.toggle('btn-primary', !isSelected);
+                    button.dataset.action = isSelected ? 'remove' : 'add';
+                }
+            };
+
+            const renderGameCards = (gameList) => {
+                gamesGrid.innerHTML = '';
+                gameList.forEach(game => {
+                    // Check if the game is selected to set initial button state
+                    const isSelected = selectedGames.some(sg => sg.id === game.id);
+                    const buttonText = isSelected ? 'Remove' : 'Add'; 
+                    const buttonClass = isSelected ? 'btn-remove' : 'btn-primary';
+
+                    const sizeDisplay = game.sizeGB.toFixed(1); 
+                    const genreDisplay = game.genre || 'N/A'; // Idinagdag: Para sa Genre
+
+                    const cardHTML = `
+                        <div class="game-card" data-id="${game.id}">
+                            <div class="card-content">
+                                <h4>${game.title}</h4>
+                                <p>Genre: ${genreDisplay}</p> <p>Size: <strong>${sizeDisplay} GB</strong></p> 
+                                <button class="btn ${buttonClass}" data-action="${isSelected ? 'remove' : 'add'}" data-id="${game.id}">
+                                    ${buttonText}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    gamesGrid.insertAdjacentHTML('beforeend', cardHTML);
+                });
+            };
+            
+            const handleSort = () => {
+                const criterion = sortBySelector.value;
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                // Filter by title or genre
+                const filteredGames = games.filter(game => {
+                    const titleMatch = game.title.toLowerCase().includes(searchTerm);
+                    const genreMatch = game.genre ? game.genre.toLowerCase().includes(searchTerm) : false;
+                    return titleMatch || genreMatch;
+                });
+
+                const sortedList = sortGames(filteredGames, criterion); 
+                renderGameCards(sortedList);
+            };
+
+            const renderSelectedGames = () => {
+                selectedGamesList.innerHTML = '';
+                if (selectedGames.length === 0) {
+                    selectedGamesList.innerHTML = '<li class="empty-message" style="color: var(--text-color); opacity: 0.7;">No games selected yet.</li>';
+                    return;
+                }
+
+                selectedGames.forEach(game => {
+                    const listItem = document.createElement('li');
+                    listItem.dataset.id = game.id; 
+                    
+                    listItem.innerHTML = `
+                        <div class="selected-game-info">
+                            <span class="game-title-display">${game.title}</span>
+                            <span class="game-size-display">${game.sizeGB.toFixed(1)} GB</span>
+                        </div>
+                        <button class="btn btn-remove" data-action="remove-mini" data-id="${game.id}" style="padding: 5px 8px; font-size: 0.8em;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    selectedGamesList.appendChild(listItem);
+                });
+            };
+
+            // --- 7. EVENT HANDLERS ---
+            const handleGameAction = (gameId, action, button) => {
+                const game = games.find(g => g.id == gameId);
+                if (!game) return;
+
+                if (action === 'add') {
+                    if (selectedGames.some(sg => sg.id === game.id)) return; 
+                    
+                    if (usedSpaceGB + game.sizeGB > TOTAL_STORAGE_GB) {
+                        alert(`Not enough space! Adding ${game.title} (${game.sizeGB.toFixed(1)} GB) exceeds the ${TOTAL_STORAGE_GB.toFixed(0)} GB limit.`);
+                        return;
+                    }
+
+                    selectedGames.push(game);
+                    usedSpaceGB += game.sizeGB;
+                    
+                    button.textContent = 'Remove';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-remove');
+                    button.dataset.action = 'remove';
+                    flyToCart(button); 
+
+                } else if (action === 'remove') {
+                    const index = selectedGames.findIndex(sg => sg.id === game.id);
+                    if (index > -1) {
+                        selectedGames.splice(index, 1);
+                        usedSpaceGB -= game.sizeGB;
+                        
+                        // Floating-point fix
+                        usedSpaceGB = Math.max(0, usedSpaceGB);
+                        
+                        button.textContent = 'Add';
+                        button.classList.remove('btn-remove');
+                        button.classList.add('btn-primary');
+                        button.dataset.action = 'add';
+                        triggerPopEffect();
+                    }
+                }
+
+                updateStorageStatus();
+                renderSelectedGames(); 
+            };
+            
+            const removeGameWithAnimation = (gameId, listItem) => {
+                const gameToRemove = games.find(g => g.id == gameId);
+                if (!gameToRemove) return;
+
+                listItem.classList.add('removing');
+
+                setTimeout(() => {
+                    const index = selectedGames.findIndex(sg => sg.id === gameId);
+                    if (index > -1) {
+                        selectedGames.splice(index, 1);
+                        usedSpaceGB -= gameToRemove.sizeGB;
+                        // Floating-point fix
+                        usedSpaceGB = Math.max(0, usedSpaceGB);
+                    }
+                    
+                    listItem.remove(); 
+                    
+                    // Update the button state on the main grid card
+                    updateGameCardButton(gameId); 
+                    
+                    updateStorageStatus();
+                    triggerPopEffect(); 
+                }, 400); 
+            }
+            
+            // Event Delegation for Game Grid Buttons
+            gamesGrid.addEventListener('click', (event) => {
+                const button = event.target.closest('.btn');
+                if (button && (button.dataset.action === 'add' || button.dataset.action === 'remove')) {
+                    const gameId = parseInt(button.dataset.id);
+                    const action = button.dataset.action;
+                    handleGameAction(gameId, action, button);
+                }
+            });
+
+            // Event Delegation for Floating Box Remove Buttons
+            selectedGamesList.addEventListener('click', (event) => {
+                const button = event.target.closest('button[data-action="remove-mini"]');
+                if (button) {
+                    const gameId = parseInt(button.dataset.id);
+                    const listItem = button.closest('li');
+                    removeGameWithAnimation(gameId, listItem); 
+                }
+            });
+            
+            // Clear All Button
+            clearAllBtn.addEventListener('click', () => {
+                const isConfirmed = confirm("Are you sure you want to clear ALL selected games from the list?");
+                
+                if (isConfirmed) {
+                    // Get IDs to update buttons on the main grid
+                    const gameIdsToClear = selectedGames.map(g => g.id);
+                    
+                    selectedGames = [];
+                    usedSpaceGB = 0; 
+                    
+                    updateStorageStatus();
+                    renderSelectedGames();
+                    handleSort(); // Re-render the grid to update all buttons that were filtered/sorted
+                    
+                    // Fallback to ensure all visible buttons are reset
+                    gameIdsToClear.forEach(updateGameCardButton); 
+
+                    triggerPopEffect();
+                }
+            });
+
+            // Download Screenshot Function (Kasama na ang Sorting by Size High-Low)
+            const downloadScreenshot = () => {
+                // 1. Create a clean, temporary container for the screenshot 
+                const tempDiv = document.createElement('div');
+                tempDiv.className = 'screenshot-container';
+                
+                // 2. Add header with timestamp
+                const now = new Date();
+                const timestamp = now.toLocaleString('en-US', {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: true
+                });
+
+                // Calculate total size
+                const totalSizeGB = usedSpaceGB.toFixed(1);
+                
+                tempDiv.innerHTML = `
+                    <h3>🎮 Game Order Details</h3>
+                    <span class="timestamp-header">Generated: ${timestamp}</span>
+                    <div class="header-separator"></div>
+                    <ul id="screenshot-list">
+                    </ul>
+                    <div class="total-size-footer">
+                        <span>Total Selected:</span> 
+                        <span class="size-value">${selectedGames.length} Game(s)</span>
+                    </div>
+                    <div class="total-size-footer" style="margin-top: 5px; border-top: none;">
+                        <span>Total Size:</span> 
+                        <span class="size-value">${totalSizeGB} GB</span>
+                    </div>
+                `;
+
+                // 3. Populate the list items (Naka-sort na by Size High-Low)
+                const screenshotList = tempDiv.querySelector('#screenshot-list');
+                if (selectedGames.length === 0) {
+                     screenshotList.innerHTML = '<li style="justify-content: center; opacity: 0.7;">No games selected.</li>';
+                } else {
+                    // PAGBABAGO DITO: Sort by 'size-high' (pinakamalaking size muna)
+                    const sortedGames = sortGames([...selectedGames], 'size-high'); 
+                    sortedGames.forEach(game => {
+                        const listItem = document.createElement('li');
+                        // Use a fixed-width size display for cleaner look
+                        listItem.innerHTML = `
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;">${game.title}</span>
+                            <span style="font-weight: 500; color: var(--primary-color); flex-shrink: 0; min-width: 70px; text-align: right;">${game.sizeGB.toFixed(1)} GB</span>
+                        `;
+                        screenshotList.appendChild(listItem);
+                    });
+                }
+                
+                // 4. Append to body temporarily
+                document.body.appendChild(tempDiv);
+                
+                // 5. Capture using html2canvas
+                html2canvas(tempDiv, {
+                    scale: 2, // Use a higher scale for better resolution
+                    useCORS: true,
+                    // Set background color explicitly for dark mode compatibility (or just rely on CSS variables)
+                    backgroundColor: body.classList.contains('dark-mode') ? '#242526' : 'white', 
+                    // Capture the element in its entirety
+                    width: tempDiv.offsetWidth,
+                    height: tempDiv.offsetHeight,
+                }).then(canvas => {
+                    // 6. Trigger Download (.jpeg format requested)
+                    const image = canvas.toDataURL('image/jpeg', 0.9); // JPEG format, 0.9 quality
+                    const link = document.createElement('a');
+                    link.download = `JayPee_GameOrder_${now.getTime()}.jpeg`; 
+                    link.href = image;
+                    // Trigger download immediately
+                    link.click();
+
+                    // 7. Remove temporary container
+                    tempDiv.remove();
+
+                    // 8. Show alert message (Dapat parang alert ito para mapansin)
+                    alert("✅ Download Complete!\n\nPaki send kay Jay Pee ang nadownload na screenshot!");
+                });
+            };
+
+            // Event listener for the new button
+            downloadScreenshotBtn.addEventListener('click', downloadScreenshot);
+
+            // Apply Debounce to search input
+            const debouncedHandleSort = debounce(handleSort, 300);
+
+            // Search and Sort Handlers
+            sortBySelector.addEventListener('change', handleSort);
+            searchInput.addEventListener('input', debouncedHandleSort);
+            
+            // HD Toggle Button
+            hdToggleBtn.addEventListener('click', () => {
+                floatingHdBox.classList.toggle('hidden');
+                
+                if (floatingHdBox.classList.contains('hidden')) {
+                    toggleTextSpan.textContent = 'Show'; 
+                } else {
+                    toggleTextSpan.textContent = 'Hide'; 
+                }
+            });
+            
+            // --- 8. INITIALIZATION ---
+            handleSort();
+            updateStorageStatus();
+            
+        });
+    </script>
+</body>
+</html>
