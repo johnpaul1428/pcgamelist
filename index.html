@@ -643,10 +643,46 @@
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             }
         }
-        @media (max-width: 700px) {
+        /* =================================================================
+           8. MEDIA QUERIES (RESPONSIVENESS)
+           ================================================================= */
+        @media (max-width: 1100px) {
             .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             }
+        }
+        @media (max-width: 700px) {
+            /* Binago para maging 3-column layout sa mobile devices */
+            .games-grid {
+                grid-template-columns: repeat(3, 1fr) !important; 
+                gap: 6px !important; /* Pinaliit ang espasyo para magkasya */
+                padding: 5px !important;
+            }
+            /* Pinaliit ang padding at laki ng mga cards para magkasya ang tatlo */
+            .game-card {
+                border-radius: 8px !important;
+            }
+            .card-content {
+                padding: 6px 4px !important;
+                min-height: auto !important;
+            }
+            .game-card h4 {
+                font-size: 0.75em !important;
+                line-height: 1.1 !important;
+                min-height: 38px !important;
+                margin-bottom: 3px !important;
+            }
+            .game-card p {
+                font-size: 0.65em !important;
+                margin-bottom: 4px !important;
+            }
+            .game-card .btn {
+                padding: 4px 6px !important;
+                font-size: 0.7em !important;
+                border-radius: 4px !important;
+            }
+            
+            /* Pag-adjust sa ibang controls sa mobile view */
             .bottom-controls-row {
                 gap: 15px; 
             }
